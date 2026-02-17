@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Core++ Command Reference</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#07090f;color:#dde8f5;font-family:'Inter',sans-serif;line-height:1.6;}
+
+/* TOP BAR */
+#topbar{background:#0c1220;border-bottom:1px solid #1e3048;padding:14px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+#topbar h1{font-family:'Space Mono',monospace;font-size:18px;color:#00e5ff;letter-spacing:2px;}
+#topbar h1 span{color:#ff6b35;}
+#search-wrap{position:relative;}
+#search{background:#111827;border:1px solid #1e3048;border-radius:8px;padding:8px 16px 8px 36px;color:#dde8f5;font-size:13px;width:260px;outline:none;font-family:'Inter',sans-serif;}
+#search:focus{border-color:#00e5ff;}
+#search::placeholder{color:#3a5268;}
+.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#3a5268;font-size:14px;}
+#count{font-size:12px;color:#3a5268;font-family:'Space Mono',monospace;}
+
+/* CATEGORIES */
+#cats{display:flex;gap:8px;padding:16px 32px;background:#0a0d17;border-bottom:1px solid #1e3048;flex-wrap:wrap;position:sticky;top:57px;z-index:99;}
+.cat-btn{padding:5px 14px;border-radius:100px;border:1px solid #1e3048;background:transparent;color:#4a6a88;font-size:12px;cursor:pointer;transition:all 0.15s;font-family:'Inter',sans-serif;white-space:nowrap;}
+.cat-btn:hover{border-color:#00e5ff;color:#00e5ff;}
+.cat-btn.active{background:rgba(0,229,255,0.1);border-color:#00e5ff;color:#00e5ff;}
+
+/* MAIN */
+#main{max-width:1100px;margin:0 auto;padding:32px;}
+
+/* SECTION */
+.section{margin-bottom:48px;}
+.section-title{font-family:'Space Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:3px;color:#00e5ff;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid #1e3048;display:flex;align-items:center;gap:10px;}
+.section-title span{background:rgba(0,229,255,0.1);border:1px solid rgba(0,229,255,0.2);border-radius:100px;padding:2px 10px;font-size:10px;}
+
+/* COMMAND CARDS GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px;}
+
+/* COMMAND CARD */
+.cmd-card{background:#0f1623;border:1px solid #1a2840;border-radius:12px;padding:18px 20px;transition:border-color 0.15s;display:none;}
+.cmd-card.visible{display:block;}
+.cmd-card:hover{border-color:#2a4060;}
+.cmd-top{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.cmd-name{font-family:'Space Mono',monospace;font-size:15px;font-weight:700;color:#00e5ff;}
+.cmd-cat-tag{font-size:10px;padding:2px 8px;border-radius:100px;font-family:'Space Mono',monospace;border:1px solid;}
+.tag-drawing{color:#00ff88;border-color:rgba(0,255,136,0.3);background:rgba(0,255,136,0.06);}
+.tag-text{color:#a855f7;border-color:rgba(168,85,247,0.3);background:rgba(168,85,247,0.06);}
+.tag-style{color:#ffd700;border-color:rgba(255,215,0,0.3);background:rgba(255,215,0,0.06);}
+.tag-space{color:#00d4ff;border-color:rgba(0,212,255,0.3);background:rgba(0,212,255,0.06);}
+.tag-nature{color:#00ff88;border-color:rgba(0,255,136,0.3);background:rgba(0,255,136,0.06);}
+.tag-logic{color:#ff6b35;border-color:rgba(255,107,53,0.3);background:rgba(255,107,53,0.06);}
+.tag-vars{color:#fb8c00;border-color:rgba(251,140,0,0.3);background:rgba(251,140,0,0.06);}
+.tag-ui{color:#00e5ff;border-color:rgba(0,229,255,0.3);background:rgba(0,229,255,0.06);}
+.tag-storage{color:#2ea043;border-color:rgba(46,160,67,0.3);background:rgba(46,160,67,0.06);}
+.tag-media{color:#ff6b9d;border-color:rgba(255,107,157,0.3);background:rgba(255,107,157,0.06);}
+.tag-math{color:#ffd700;border-color:rgba(255,215,0,0.3);background:rgba(255,215,0,0.06);}
+.tag-canvas{color:#a855f7;border-color:rgba(168,85,247,0.3);background:rgba(168,85,247,0.06);}
+
+.cmd-desc{font-size:13px;color:#6a8aaa;margin-bottom:12px;line-height:1.55;}
+.cmd-syntax{background:#070c14;border-radius:7px;padding:9px 13px;font-family:'Space Mono',monospace;font-size:12px;color:#b0c8e0;margin-bottom:10px;border:1px solid #111f30;}
+.cmd-syntax .k{color:#00e5ff;}
+.cmd-syntax .n{color:#ffd700;}
+.cmd-syntax .c{color:#ff6b9d;}
+.cmd-syntax .s{color:#00ff88;}
+.cmd-syntax .v{color:#fb8c00;}
+.cmd-example-label{font-size:10px;color:#3a5268;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;font-family:'Space Mono',monospace;}
+.cmd-example{background:#060a12;border-radius:6px;padding:8px 12px;font-family:'Space Mono',monospace;font-size:11px;color:#7aaa88;border-left:2px solid #1e3048;}
+
+/* NO RESULTS */
+#no-results{display:none;text-align:center;padding:80px 20px;color:#3a5268;font-family:'Space Mono',monospace;}
+
+/* Mobile */
+@media(max-width:600px){
+  #topbar{padding:12px 16px;flex-direction:column;gap:10px;}
+  #cats{padding:12px 16px;}
+  #main{padding:20px 16px;}
+  #search{width:100%;}
+  .grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <h1>Core<span>++</span></h1>
+  <div id="search-wrap">
+    <span class="search-icon">⌕</span>
+    <input id="search" type="text" placeholder="Search commands..." oninput="filterCmds()">
+  </div>
+  <div id="count">Loading...</div>
+</div>
+
+<div id="cats">
+  <button class="cat-btn active" onclick="filterCat('all')">All</button>
+  <button class="cat-btn" onclick="filterCat('drawing')">🎨 Drawing</button>
+  <button class="cat-btn" onclick="filterCat('text')">📝 Text</button>
+  <button class="cat-btn" onclick="filterCat('style')">✨ Style</button>
+  <button class="cat-btn" onclick="filterCat('space')">🌌 Space</button>
+  <button class="cat-btn" onclick="filterCat('nature')">🌿 Nature</button>
+  <button class="cat-btn" onclick="filterCat('vars')">📦 Variables</button>
+  <button class="cat-btn" onclick="filterCat('math')">🔢 Math</button>
+  <button class="cat-btn" onclick="filterCat('logic')">🔀 Logic</button>
+  <button class="cat-btn" onclick="filterCat('ui')">🔘 Buttons</button>
+  <button class="cat-btn" onclick="filterCat('storage')">💾 Storage</button>
+  <button class="cat-btn" onclick="filterCat('media')">🔊 Media</button>
+  <button class="cat-btn" onclick="filterCat('canvas')">🖼 Canvas</button>
+</div>
+
+<div id="main">
+  <div id="no-results">No commands found for "<span id="search-term"></span>"</div>
+  <div id="cards-wrap"></div>
+</div>
+
+<script>
+const COMMANDS = [
+  // ── DRAWING ──────────────────────────────────────────────────
+  {name:'bg',cat:'drawing',desc:'Fill the entire canvas with a color. Can be solid, gradient (top to bottom), or radial (center to edge). Always put this first in your code.',syntax:'<k>bg</k> <c>color</c>\n<k>bg</k> gradient <c>color1</c> <c>color2</c>\n<k>bg</k> radial <c>color1</c> <c>color2</c>',ex:'bg black\nbg navy\nbg gradient black navy\nbg radial #1a0a2e black'},
+  {name:'background',cat:'drawing',desc:'Same as bg. Full word version. Fill canvas with color.',syntax:'<k>background</k> <c>color</c>',ex:'background black\nbackground darkblue'},
+  {name:'circle',cat:'drawing',desc:'Draw a filled circle. Position by center point (x,y), set radius for size, choose fill color. Optional border color and thickness.',syntax:'<k>circle</k> <n>x y radius</n> <c>color</c>\n<k>circle</k> <n>x y radius</n> <c>fill</c> <c>border</c> <n>thickness</n>',ex:'circle 350 250 50 red\ncircle 100 100 30 cyan\ncircle 350 250 80 blue white 4'},
+  {name:'box',cat:'drawing',desc:'Draw a filled rectangle. Position is top-left corner. Width and height set the size. Optional rounded corners.',syntax:'<k>box</k> <n>x y width height</n> <c>color</c>\n<k>box</k> <n>x y width height</n> <c>color</c> <n>cornerRadius</n>',ex:'box 100 100 200 150 navy\nbox 50 50 300 200 #1a2a4a\nbox 100 100 200 200 cyan 20'},
+  {name:'rect',cat:'drawing',desc:'Same as box. Draw a rectangle.',syntax:'<k>rect</k> <n>x y width height</n> <c>color</c>',ex:'rect 100 100 200 150 navy'},
+  {name:'square',cat:'drawing',desc:'Same as box. Draw a square or rectangle.',syntax:'<k>square</k> <n>x y width height</n> <c>color</c>',ex:'square 200 200 100 100 gold'},
+  {name:'line',cat:'drawing',desc:'Draw a straight line from one point to another. Set start point (x1,y1), end point (x2,y2), color and thickness.',syntax:'<k>line</k> <n>x1 y1 x2 y2</n> <c>color</c> <n>thickness</n>',ex:'line 0 250 700 250 white 2\nline 350 0 350 500 cyan 1\nline 0 0 700 500 gold 5'},
+  {name:'triangle',cat:'drawing',desc:'Draw a filled triangle. Position is center point, size sets height. Draws a classic equilateral triangle pointing up.',syntax:'<k>triangle</k> <n>x y size</n> <c>color</c>',ex:'triangle 350 250 60 red\ntriangle 200 300 40 cyan'},
+  {name:'star',cat:'drawing',desc:'Draw a star shape. Set number of points (5=classic), radius (size), center position and color. More points = more star-like.',syntax:'<k>star</k> <n>points radius x y</n> <c>color</c>',ex:'star 5 40 350 250 gold\nstar 6 50 200 200 cyan\nstar 8 60 350 250 white'},
+  {name:'polygon',cat:'drawing',desc:'Draw any regular polygon — triangle (3), square (4), pentagon (5), hexagon (6), etc. Set number of sides, radius and position.',syntax:'<k>polygon</k> <n>sides radius x y</n> <c>color</c>',ex:'polygon 6 50 350 250 cyan\npolygon 3 60 200 200 red\npolygon 8 40 500 300 gold'},
+  {name:'ellipse',cat:'drawing',desc:'Draw an oval (ellipse). Like a stretched circle — set different width and height radii.',syntax:'<k>ellipse</k> <n>x y radiusX radiusY</n> <c>color</c>',ex:'ellipse 350 250 80 40 blue\nellipse 200 200 50 30 red'},
+  {name:'heart',cat:'drawing',desc:'Draw a heart shape. Set center position and size. Core++ handles the complex curves automatically.',syntax:'<k>heart</k> <n>x y size</n> <c>color</c>',ex:'heart 350 250 60 red\nheart 350 250 100 pink'},
+  {name:'diamond',cat:'drawing',desc:'Draw a diamond (rhombus) shape. Set center position and size.',syntax:'<k>diamond</k> <n>x y size</n> <c>color</c>',ex:'diamond 350 250 50 cyan\ndiamond 200 200 40 gold'},
+  {name:'dot',cat:'drawing',desc:'Draw a small filled circle. Simpler than circle — just position and size.',syntax:'<k>dot</k> <n>x y radius</n> <c>color</c>',ex:'dot 100 100 5 white\ndot 350 250 20 red'},
+  {name:'ring',cat:'drawing',desc:'Draw a circle outline (ring) — not filled. Set center, radius, and thickness.',syntax:'<k>ring</k> <n>x y radius thickness</n> <c>color</c>',ex:'ring 350 250 60 3 cyan\nring 350 250 100 8 gold'},
+  {name:'cross',cat:'drawing',desc:'Draw a plus (+) or cross shape at a position.',syntax:'<k>cross</k> <n>x y size thickness</n> <c>color</c>',ex:'cross 350 250 30 4 white\ncross 100 100 20 3 red'},
+  {name:'arrow',cat:'drawing',desc:'Draw an arrow from one point to another with an arrowhead at the end.',syntax:'<k>arrow</k> <n>x1 y1 x2 y2</n>',ex:'arrow 100 250 600 250\narrow 350 100 350 400'},
+  {name:'arc',cat:'drawing',desc:'Draw a partial circle (arc). Set center, radius, start angle and end angle in degrees.',syntax:'<k>arc</k> <n>x y radius startAngle endAngle</n>',ex:'arc 350 250 100 0 180\narc 350 250 80 45 315'},
+
+  // ── TEXT ──────────────────────────────────────────────────────
+  {name:'text',cat:'text',desc:'Write text on the canvas. Use underscore _ instead of spaces in your text — Core++ shows it as a space. Set position, color and font size.',syntax:'<k>text</k> <s>content</s> <n>x y</n> <c>color</c> <n>size</n>',ex:'text Hello_World 100 200 white 20\ntext Score:_0 20 30 gold 16\ntext Game_Over 200 250 red 40'},
+  {name:'bigtext',cat:'text',desc:'Write large bold text centered horizontally on screen. Great for titles and game-over screens.',syntax:'<k>bigtext</k> <s>content</s> <c>color</c> <n>size</n>',ex:'bigtext Core++ white 48\nbigtext Game_Over red 40'},
+  {name:'heading',cat:'text',desc:'Write a heading — centered and bold. Like a title at the top of a page.',syntax:'<k>heading</k> <s>content</s> <n>x y</n>',ex:'heading My_App 350 50\nheading Welcome 350 80'},
+  {name:'label',cat:'text',desc:'Write a small label anywhere. Like a caption or description.',syntax:'<k>label</k> <s>content</s> <n>x y</n> <c>color</c> <n>size</n>',ex:'label Name: 80 218 white 14\nlabel Score 20 30 gold 12'},
+  {name:'typetext',cat:'text',desc:'Show the value of a variable on screen. Use this for scores, counters, and live data. The value updates when the variable changes.',syntax:'<k>typetext</k> <v>variableName</v> <n>x y</n> <c>color</c> <n>size</n>',ex:'set score 42\ntypetext score 300 100 gold 24\n\nset name Alex\ntypetext name 100 200 cyan 18'},
+
+  // ── STYLE & EFFECTS ───────────────────────────────────────────
+  {name:'color',cat:'style',desc:'Set the drawing color for everything after this command. Affects strokes and fills.',syntax:'<k>color</k> <c>colorName</c>',ex:'color red\ncolor #ff6b35\ncolor cyan'},
+  {name:'fill',cat:'style',desc:'Set the fill color (inside of shapes). Does not affect stroke/outline.',syntax:'<k>fill</k> <c>colorName</c>',ex:'fill blue\nfill #1a2a4a'},
+  {name:'stroke',cat:'style',desc:'Set the outline/border color for shapes drawn after this.',syntax:'<k>stroke</k> <c>colorName</c>',ex:'stroke white\nstroke cyan'},
+  {name:'linewidth',cat:'style',desc:'Set how thick lines and shape outlines are, in pixels.',syntax:'<k>linewidth</k> <n>pixels</n>',ex:'linewidth 2\nlinewidth 8\nlinewidth 1'},
+  {name:'thick',cat:'style',desc:'Same as linewidth. Set line/stroke thickness.',syntax:'<k>thick</k> <n>pixels</n>',ex:'thick 3\nthick 10'},
+  {name:'alpha',cat:'style',desc:'Set opacity/transparency. 100 = fully visible. 0 = invisible. 50 = half transparent. Affects everything drawn after.',syntax:'<k>alpha</k> <n>0-100</n>',ex:'alpha 100\nalpha 50\nalpha 20'},
+  {name:'opacity',cat:'style',desc:'Same as alpha. Set transparency level 0-100.',syntax:'<k>opacity</k> <n>0-100</n>',ex:'opacity 80\nopacity 40'},
+  {name:'shadow',cat:'style',desc:'Add a drop shadow effect to shapes drawn after. Set blur size and shadow color.',syntax:'<k>shadow</k> <n>blurSize</n> <c>color</c>',ex:'shadow 20 cyan\nshadow 10 rgba(0,0,0,0.5)\nshadow 30 gold'},
+  {name:'noshadow',cat:'style',desc:'Remove shadow effect. Shapes drawn after this will have no shadow.',syntax:'<k>noshadow</k>',ex:'noshadow'},
+  {name:'neon',cat:'style',desc:'Apply a neon glow effect in any color. Everything drawn after will glow. Great for sci-fi scenes.',syntax:'<k>neon</k> <c>color</c>',ex:'neon cyan\nneon #ff6b35\nneon magenta'},
+  {name:'bloom',cat:'style',desc:'Apply a bloom/glow filter — makes bright areas glow and spread. Cinematic light effect.',syntax:'<k>bloom</k>',ex:'bloom'},
+  {name:'nobloom',cat:'style',desc:'Remove bloom filter applied by bloom command.',syntax:'<k>nobloom</k>',ex:'nobloom'},
+  {name:'blend',cat:'style',desc:'Set how new drawings blend with existing canvas. Options: source-over, multiply, screen, overlay, add, difference.',syntax:'<k>blend</k> <s>mode</s>',ex:'blend screen\nblend multiply\nblend overlay\nblend source-over'},
+
+  // ── LIGHTING ─────────────────────────────────────────────────
+  {name:'light',cat:'style',desc:'Add a radial light effect — a soft glow spread over an area. Great for lamps, torches, and atmospheric lighting.',syntax:'<k>light</k> <n>x y radius</n> <c>color</c>',ex:'light 350 250 150 yellow\nlight 100 100 80 orange\nlight 600 400 200 blue'},
+  {name:'spotlight',cat:'style',desc:'Add a focused spotlight — brighter and more concentrated than light. Like a stage spotlight.',syntax:'<k>spotlight</k> <n>x y radius</n>',ex:'spotlight 350 250 100\nspotlight 200 150 80'},
+  {name:'glow',cat:'style',desc:'Draw a glowing ball of light — like a glowing orb or energy sphere.',syntax:'<k>glow</k> <n>x y radius</n> <c>color</c>',ex:'glow 350 250 50 cyan\nglow 200 200 30 gold\nglow 500 300 80 magenta'},
+  {name:'ambient',cat:'style',desc:'Add a global ambient color tint over the whole canvas. Like colored fog or atmosphere.',syntax:'<k>ambient</k> <c>color</c> <n>opacity%</n>',ex:'ambient blue 20\nambient red 10\nambient gold 30'},
+
+  // ── SPACE ────────────────────────────────────────────────────
+  {name:'stars',cat:'space',desc:'Draw many tiny stars randomly across the canvas. Set how many stars to draw.',syntax:'<k>stars</k> <n>count</n>',ex:'stars 100\nstars 500\nstars 50'},
+  {name:'planet',cat:'space',desc:'Draw a planet with a realistic gradient — bright highlight, colored surface, dark edge. Set position, size and color.',syntax:'<k>planet</k> <n>x y radius</n> <c>color</c>',ex:'planet 350 250 70 blue\nplanet 200 200 50 red\nplanet 500 300 90 green'},
+  {name:'sun',cat:'space',desc:'Draw a glowing sun with a corona (glow ring around it). Set position and size.',syntax:'<k>sun</k> <n>x y radius</n>',ex:'sun 350 250 60\nsun 100 100 40\nsun 600 150 80'},
+  {name:'galaxy',cat:'space',desc:'Draw a swirling galaxy — a spiral of colored dots radiating from center.',syntax:'<k>galaxy</k> <n>x y radius</n>',ex:'galaxy 350 250 120\ngalaxy 200 200 80'},
+  {name:'ufo',cat:'space',desc:'Draw a classic flying saucer UFO with dome and colored lights underneath.',syntax:'<k>ufo</k> <n>x y</n>',ex:'ufo 350 250\nufo 200 150\nufo 500 100'},
+  {name:'meteor',cat:'space',desc:'Draw a meteor shower — streaks of light across the canvas. Set how many meteors.',syntax:'<k>meteor</k> <n>count</n>',ex:'meteor 10\nmeteor 25'},
+  {name:'ringedplanet',cat:'space',desc:'Draw Saturn-like planet with a ring around it. Set position, size, planet color and ring color.',syntax:'<k>ringedplanet</k> <n>x y radius</n> <c>planetColor</c> <c>ringColor</c>',ex:'ringedplanet 350 250 60 gold tan\nringedplanet 400 300 80 #DAA520 #F4A460'},
+
+  // ── NATURE ───────────────────────────────────────────────────
+  {name:'tree',cat:'nature',desc:'Draw a tree with brown trunk and green leafy top. Set base position and height.',syntax:'<k>tree</k> <n>x y height</n>',ex:'tree 200 400 100\ntree 500 450 140\ntree 350 480 80'},
+  {name:'pine',cat:'nature',desc:'Draw a pine/Christmas tree shape — triangular layers getting wider at bottom.',syntax:'<k>pine</k> <n>x y height</n>',ex:'pine 200 400 120\npine 100 450 100'},
+  {name:'mountain',cat:'nature',desc:'Draw a mountain with snow-capped peak. Gradient from white top to grey base.',syntax:'<k>mountain</k> <n>x y height</n>',ex:'mountain 350 400 200\nmountain 200 420 150\nmountain 500 380 180'},
+  {name:'rainbow',cat:'nature',desc:'Draw a rainbow arc with 7 colors from red to violet. Set center and radius.',syntax:'<k>rainbow</k> <n>x y radius</n>',ex:'rainbow 350 400 200\nrainbow 350 500 280'},
+  {name:'ocean',cat:'nature',desc:'Fill the canvas with an ocean scene — sky blue at top fading to deep blue at bottom.',syntax:'<k>ocean</k>',ex:'ocean'},
+  {name:'wave',cat:'nature',desc:'Draw ocean wave lines. Set vertical position and wave amplitude (height).',syntax:'<k>wave</k> <n>y amplitude</n>',ex:'wave 300 20\nwave 350 10\nwave 400 30'},
+  {name:'bubble',cat:'nature',desc:'Draw a transparent soap bubble with realistic glass-like shine.',syntax:'<k>bubble</k> <n>x y radius</n>',ex:'bubble 200 200 30\nbubble 400 300 50\nbubble 100 350 20'},
+  {name:'fire',cat:'nature',desc:'Draw a fire effect — glowing particles in red/orange/yellow. Set base position and height.',syntax:'<k>fire</k> <n>x y height</n>',ex:'fire 350 400 120\nfire 200 450 80'},
+  {name:'lightning',cat:'nature',desc:'Draw a lightning bolt from top point down to bottom. Set start position and end Y.',syntax:'<k>lightning</k> <n>x1 y1 x2 y2</n>',ex:'lightning 350 0 350 500\nlightning 200 0 300 500'},
+  {name:'snow',cat:'nature',desc:'Draw snow — random white dots of varying sizes across the canvas.',syntax:'<k>snow</k> <n>count</n>',ex:'snow 60\nsnow 200'},
+  {name:'rain',cat:'nature',desc:'Draw rain — diagonal streaks of translucent blue lines across canvas.',syntax:'<k>rain</k> <n>count</n>',ex:'rain 80\nrain 150'},
+  {name:'fog',cat:'nature',desc:'Add fog/mist overlay over the canvas. Set opacity (0-100).',syntax:'<k>fog</k> <n>opacity</n> <c>color</c>',ex:'fog 30 white\nfog 50 gray\nfog 20 #cccccc'},
+
+  // ── FANTASY ──────────────────────────────────────────────────
+  {name:'magic',cat:'nature',desc:'Draw a burst of magic particles — colorful sparkles radiating from a point.',syntax:'<k>magic</k> <n>x y</n>',ex:'magic 350 250\nmagic 200 200\nmagic 500 300'},
+  {name:'portal',cat:'nature',desc:'Draw a glowing portal — concentric circles in rainbow colors.',syntax:'<k>portal</k> <n>x y radius</n>',ex:'portal 350 250 80\nportal 200 200 60'},
+  {name:'crystal',cat:'nature',desc:'Draw a crystal gem shape with glass-like gradient shading.',syntax:'<k>crystal</k> <n>x y height</n> <c>color</c>',ex:'crystal 350 250 80 cyan\ncrystal 200 300 60 magenta'},
+
+  // ── VARIABLES ─────────────────────────────────────────────────
+  {name:'set',cat:'vars',desc:'Create a variable and give it a value. Variables store numbers or text you can use later. Name can be anything you want.',syntax:'<k>set</k> <v>name</v> <n>value</n>',ex:'set score 0\nset lives 3\nset speed 5\nset playerName Alex\nset x 350'},
+  {name:'inc',cat:'vars',desc:'Increase a variable by 1. Short for "increment". Same as add variableName 1.',syntax:'<k>inc</k> <v>variableName</v>',ex:'inc score\ninc lives\ninc counter'},
+  {name:'dec',cat:'vars',desc:'Decrease a variable by 1. Short for "decrement". Same as sub variableName 1.',syntax:'<k>dec</k> <v>variableName</v>',ex:'dec lives\ndec ammo\ndec timer'},
+
+  // ── MATH ──────────────────────────────────────────────────────
+  {name:'add',cat:'math',desc:'Add a number to a variable. The variable gets updated. Result stays in the same variable.',syntax:'<k>add</k> <v>variable</v> <n>amount</n>',ex:'add score 100\nadd x 5\nadd level 1'},
+  {name:'sub',cat:'math',desc:'Subtract a number from a variable.',syntax:'<k>sub</k> <v>variable</v> <n>amount</n>',ex:'sub lives 1\nsub health 25\nsub timer 1'},
+  {name:'mul',cat:'math',desc:'Multiply a variable by a number.',syntax:'<k>mul</k> <v>variable</v> <n>amount</n>',ex:'mul score 2\nmul speed 1.5\nmul size 3'},
+  {name:'div',cat:'math',desc:'Divide a variable by a number.',syntax:'<k>div</k> <v>variable</v> <n>amount</n>',ex:'div health 2\ndiv speed 3\ndiv score 10'},
+  {name:'mod',cat:'math',desc:'Modulo — remainder after division. Example: 10 mod 3 = 1.',syntax:'<k>mod</k> <v>variable</v> <n>divisor</n>',ex:'mod counter 10\nmod x 700'},
+  {name:'pow',cat:'math',desc:'Raise a number to a power. result = base ^ exponent.',syntax:'<k>pow</k> <v>result</v> <n>base exponent</n>',ex:'pow result 2 10\npow area 5 2'},
+  {name:'sqrt',cat:'math',desc:'Square root of a number.',syntax:'<k>sqrt</k> <v>result</v> <n>value</n>',ex:'sqrt result 144\nsqrt len 625'},
+  {name:'abs',cat:'math',desc:'Absolute value — makes negative numbers positive.',syntax:'<k>abs</k> <v>result</v> <n>value</n>',ex:'abs result -42\nabs dist speed'},
+  {name:'round',cat:'math',desc:'Round a number to nearest whole number.',syntax:'<k>round</k> <v>result</v> <n>value</n>',ex:'round result 3.7\nround score total'},
+  {name:'floor',cat:'math',desc:'Round DOWN to nearest whole number.',syntax:'<k>floor</k> <v>result</v> <n>value</n>',ex:'floor result 3.9\nfloor idx 5.8'},
+  {name:'ceil',cat:'math',desc:'Round UP to nearest whole number.',syntax:'<k>ceil</k> <v>result</v> <n>value</n>',ex:'ceil result 3.1\nceil pages 4.2'},
+  {name:'max',cat:'math',desc:'Store the larger of two numbers.',syntax:'<k>max</k> <v>result</v> <n>a b</n>',ex:'max best score 100\nmax limit x 700'},
+  {name:'min',cat:'math',desc:'Store the smaller of two numbers.',syntax:'<k>min</k> <v>result</v> <n>a b</n>',ex:'min safe lives 0\nmin pos x 50'},
+  {name:'rand',cat:'math',desc:'Generate a random number between min and max (inclusive). Store in variable.',syntax:'<k>rand</k> <v>result</v> <n>min max</n>',ex:'rand x 0 700\nrand y 0 500\nrand size 10 80\nrand roll 1 6'},
+  {name:'sin',cat:'math',desc:'Sine of angle in degrees. Result between -1 and 1. Use for circular motion.',syntax:'<k>sin</k> <v>result</v> <n>degrees</n>',ex:'sin result 90\nsin vy angle'},
+  {name:'cos',cat:'math',desc:'Cosine of angle in degrees. Result between -1 and 1. Use for circular motion.',syntax:'<k>cos</k> <v>result</v> <n>degrees</n>',ex:'cos result 0\ncos vx angle'},
+  {name:'tan',cat:'math',desc:'Tangent of angle in degrees.',syntax:'<k>tan</k> <v>result</v> <n>degrees</n>',ex:'tan result 45'},
+  {name:'pi',cat:'math',desc:'Store the value of Pi (3.14159...) in a variable.',syntax:'<k>pi</k> <v>variableName</v>',ex:'pi myPi\nmul area r r\nmul area myPi'},
+  {name:'concat',cat:'math',desc:'Join two values into one string. Combine text and numbers.',syntax:'<k>concat</k> <v>result</v> <v>a</v> <v>b</v>',ex:'set prefix Score:\nconcat display prefix score\ntypetext display 100 100 white 16'},
+  {name:'len',cat:'math',desc:'Get the length (number of characters) of a text variable.',syntax:'<k>len</k> <v>result</v> <v>textVar</v>',ex:'set word Hello\nlen result word\ntypetext result 100 100 white 16'},
+
+  // ── LOGIC ────────────────────────────────────────────────────
+  {name:'if',cat:'logic',desc:'Run code only when a condition is true. Compare variable to value using ==, !=, >, <, >=, <=. Must end with endif.',syntax:'<k>if</k> <v>variable</v> <k>==</k> <n>value</n>\n  ..code..\n<k>endif</k>',ex:'if score > 100\n  text High_Score! 200 200 gold 24\nendif\n\nif lives == 0\n  text Game_Over 200 250 red 30\nendif'},
+  {name:'else',cat:'logic',desc:'Run code when the if condition is false. Goes between if and endif.',syntax:'<k>if</k> <v>var</v> <k>==</k> <n>val</n>\n  ..if true..\n<k>else</k>\n  ..if false..\n<k>endif</k>',ex:'if score > 50\n  text Winner! 200 250 gold 28\nelse\n  text Keep_trying 200 250 gray 20\nendif'},
+  {name:'endif',cat:'logic',desc:'Closes an if statement. Every if must have an endif.',syntax:'<k>endif</k>',ex:'if x > 100\n  circle 350 250 50 red\nendif'},
+  {name:'for',cat:'logic',desc:'Repeat code a set number of times. Variable counts from start to end. Use next to close.',syntax:'<k>for</k> <v>variable</v> <n>start end</n>\n  ..code..\n<k>next</k>',ex:'for i 1 10\n  circle i*65 250 25 cyan\nnext\n\nfor s 1 100\n  rand px 0 700\n  rand py 0 500\n  dot px py 2 white\nnext'},
+  {name:'next',cat:'logic',desc:'Closes a for loop. Goes at the end of the repeated block.',syntax:'<k>next</k>',ex:'for i 1 5\n  star 5 30 i*130 250 gold\nnext'},
+  {name:'while',cat:'logic',desc:'Repeat code as long as a condition stays true. Always make sure the condition becomes false eventually.',syntax:'<k>while</k> <v>var</v> <k><</k> <n>value</n>\n  ..code..\n<k>endwhile</k>',ex:'set i 0\nwhile i < 10\n  circle i*70 250 25 cyan\n  inc i\nendwhile'},
+  {name:'endwhile',cat:'logic',desc:'Closes a while loop.',syntax:'<k>endwhile</k>',ex:'while x < 700\n  ...\nendwhile'},
+  {name:'func',cat:'logic',desc:'Define a custom reusable command. Write the code once, call it many times. Parameters are optional.',syntax:'<k>func</k> <s>name</s> <v>param1 param2</v>\n  ..code..\n<k>endfunc</k>',ex:'func drawStar sx sy\n  star 5 30 sx sy gold\nendfunc\n\ncall drawStar 100 200\ncall drawStar 300 200\ncall drawStar 500 200'},
+  {name:'call',cat:'logic',desc:'Run a function you defined with func. Pass arguments that map to the function parameters.',syntax:'<k>call</k> <s>funcName</s> <n>arg1 arg2</n>',ex:'call drawStar 350 250\ncall spawnEnemy 100 300\ncall drawMenu'},
+  {name:'endfunc',cat:'logic',desc:'Closes a function definition.',syntax:'<k>endfunc</k>',ex:'func myFunc\n  ...\nendfunc'},
+
+  // ── BUTTONS & UI ──────────────────────────────────────────────
+  {name:'button',cat:'ui',desc:'Draw a clickable green button. When clicked, switches to the target screen number. Label uses _ for spaces.',syntax:'<k>button</k> <s>label</s> <n>x y width height target</n> <c>color</c>',ex:'button Start 275 300 150 45 2\nbutton About 275 360 150 45 3 navy\nbutton Back_Home 20 20 130 40 1'},
+  {name:'linkbtn',cat:'ui',desc:'Draw a button that opens a URL in a new browser tab when clicked.',syntax:'<k>linkbtn</k> <s>label</s> <n>x y width height</n> <s>url</s>',ex:'linkbtn Visit_Website 200 300 180 45 https://example.com'},
+  {name:'redbtn',cat:'ui',desc:'Draw a red danger-style button. Same as button but red color by default.',syntax:'<k>redbtn</k> <s>label</s> <n>x y width height target</n>',ex:'redbtn Delete 200 300 120 40 5\nredbtn Exit 20 20 100 35 1'},
+  {name:'clickable',cat:'ui',desc:'Create an invisible clickable area. No visual, just interaction zone. When clicked, goes to target screen.',syntax:'<k>clickable</k> <s>name</s> <n>x y width height target</n>',ex:'clickable logo 0 0 200 80 1\nclickable hero_area 100 100 500 300 2'},
+  {name:'field',cat:'ui',desc:'Create a text input field. User can type in it. Whatever they type is stored in the variable. Placeholder text is optional.',syntax:'<k>field</k> <v>variable</v> <n>x y width</n> <s>placeholder</s>',ex:'field userName 200 200 200 Enter_name\nfield search 100 100 300 Search...'},
+  {name:'area',cat:'ui',desc:'Create a multi-line text input (textarea). User can type multiple lines.',syntax:'<k>area</k> <v>variable</v> <n>x y width height</n>',ex:'area message 100 150 300 120\narea notes 200 200 250 100'},
+  {name:'dropdown',cat:'ui',desc:'Create a dropdown select menu. List options separated by commas. Selected value goes to variable.',syntax:'<k>dropdown</k> <v>variable</v> <n>x y</n> <s>opt1,opt2,opt3</s>',ex:'dropdown choice 200 200 Red,Green,Blue\ndropdown lang 100 300 English,Spanish,French'},
+  {name:'check',cat:'ui',desc:'Create a checkbox. Variable is 1 when checked, 0 when unchecked.',syntax:'<k>check</k> <v>variable</v> <n>x y</n>',ex:'check agree 200 200\ncheck darkMode 100 300'},
+  {name:'getvalue',cat:'ui',desc:'Read the current value from an input field into a variable. Use after field to get what user typed.',syntax:'<k>getvalue</k> <v>result</v> <v>fieldVar</v>',ex:'getvalue typed userName\ntypetext typed 100 300 white 16'},
+  {name:'clearelements',cat:'ui',desc:'Remove all HTML elements (fields, dropdowns, checkboxes) from the canvas.',syntax:'<k>clearelements</k>',ex:'clearelements'},
+  {name:'grid',cat:'ui',desc:'Draw a grid overlay on the canvas. Useful for layout planning.',syntax:'<k>grid</k> <n>divisions</n>',ex:'grid 4\ngrid 8\ngrid 10'},
+
+  // ── STORAGE ───────────────────────────────────────────────────
+  {name:'save',cat:'storage',desc:'Save a value permanently. Data stays even after closing browser. Use a name to identify what you saved.',syntax:'<k>save</k> <s>name</s> <v>value</v>',ex:'save highscore score\nsave level 5\nsave playerName name'},
+  {name:'load',cat:'storage',desc:'Load a previously saved value into a variable. If nothing was saved with that name, variable becomes 0.',syntax:'<k>load</k> <v>variable</v> <s>name</s>',ex:'load best highscore\nload savedLevel level\ntypetext best 300 100 gold 20'},
+  {name:'del',cat:'storage',desc:'Delete a saved value. Removes it permanently from storage.',syntax:'<k>del</k> <s>name</s>',ex:'del highscore\ndel savedGame'},
+  {name:'clearstorage',cat:'storage',desc:'Delete all saved data for this app. Fresh start.',syntax:'<k>clearstorage</k>',ex:'clearstorage'},
+  {name:'hassaved',cat:'storage',desc:'Check if something has been saved. Sets variable to 1 if saved, 0 if not.',syntax:'<k>hassaved</k> <v>result</v> <s>name</s>',ex:'hassaved exists highscore\nif exists == 1\n  load best highscore\nendif'},
+
+  // ── MEDIA & OUTPUT ───────────────────────────────────────────
+  {name:'speak',cat:'media',desc:'Convert text to speech using device voice. App literally speaks to the user. Use _ for spaces.',syntax:'<k>speak</k> <s>text</s>',ex:'speak Hello_World\nspeak Welcome_to_Core_plus_plus\nspeak Game_Over'},
+  {name:'say',cat:'media',desc:'Same as speak. Text to speech.',syntax:'<k>say</k> <s>text</s>',ex:'say Hello!\nsay Score_is_100'},
+  {name:'log',cat:'media',desc:'Print a message to the output panel at the bottom of the editor. Useful for debugging.',syntax:'<k>log</k> <s>message</s>',ex:'log Hello\nlog score\nlog Testing_123'},
+  {name:'print',cat:'media',desc:'Same as log. Print to output panel.',syntax:'<k>print</k> <s>message</s>',ex:'print score\nprint Done!'},
+  {name:'alert',cat:'media',desc:'Show a browser popup alert box with a message.',syntax:'<k>alert</k> <s>message</s>',ex:'alert Game_Over!\nalert You_win!'},
+  {name:'confirm',cat:'media',desc:'Show a popup asking user Yes/No. Stores 1 for yes, 0 for no.',syntax:'<k>confirm</k> <v>result</v> <s>question</s>',ex:'confirm ans Are_you_sure?\nif ans == 1\n  clearstorage\nendif'},
+  {name:'prompt',cat:'media',desc:'Show a popup asking user to type something. Stores what they type.',syntax:'<k>prompt</k> <v>result</v> <s>question</s>',ex:'prompt name Enter_your_name\ntypetext name 200 200 white 20'},
+  {name:'notify',cat:'media',desc:'Send a system notification (if browser allows). Shows outside the browser.',syntax:'<k>notify</k> <s>message</s>',ex:'notify You_won!\nnotify New_high_score!'},
+  {name:'savepng',cat:'media',desc:'Download the canvas as a PNG image file.',syntax:'<k>savepng</k> <s>filename</s>',ex:'savepng myart\nsavepng screenshot'},
+  {name:'exportpng',cat:'media',desc:'Same as savepng. Download canvas as image.',syntax:'<k>exportpng</k> <s>filename</s>',ex:'exportpng drawing'},
+  {name:'openurl',cat:'media',desc:'Open a web URL in a new browser tab.',syntax:'<k>openurl</k> <s>url</s>',ex:'openurl https://google.com'},
+  {name:'settitle',cat:'media',desc:'Change the browser tab title.',syntax:'<k>settitle</k> <s>title</s>',ex:'settitle Core++ App\nsettitle My_Game'},
+  {name:'clipboard',cat:'media',desc:'Copy text to clipboard (copy) or paste from clipboard (paste).',syntax:'<k>clipboard</k> copy <v>variable</v>\n<k>clipboard</k> paste <v>variable</v>',ex:'clipboard copy score\nclipboard paste pasted'},
+
+  // ── CANVAS ────────────────────────────────────────────────────
+  {name:'clear',cat:'canvas',desc:'Clear the canvas to transparent black. Removes everything drawn.',syntax:'<k>clear</k>',ex:'clear'},
+  {name:'clearscreen',cat:'canvas',desc:'Clear canvas and remove all buttons and HTML elements.',syntax:'<k>clearscreen</k>',ex:'clearscreen'},
+  {name:'screen',cat:'canvas',desc:'Manually switch to a specific screen number. Updates current_screen variable.',syntax:'<k>screen</k> <n>number</n>',ex:'screen 1\nscreen 3'},
+  {name:'resize',cat:'canvas',desc:'Change the canvas size in pixels.',syntax:'<k>resize</k> <n>width height</n>',ex:'resize 800 600\nresize 1200 800'},
+  {name:'cursor',cat:'canvas',desc:'Change the mouse cursor style over the canvas.',syntax:'<k>cursor</k> <s>style</s>',ex:'cursor crosshair\ncursor pointer\ncursor default\ncursor none'},
+  {name:'putpixel',cat:'canvas',desc:'Draw a single pixel at an exact position.',syntax:'<k>putpixel</k> <n>x y</n> <c>color</c>',ex:'putpixel 100 100 red\nputpixel 350 250 cyan'},
+  {name:'getpixel',cat:'canvas',desc:'Read the color of a pixel at a position. Stores color string in variable.',syntax:'<k>getpixel</k> <v>result</v> <n>x y</n>',ex:'getpixel c 350 250\ntypetext c 100 100 white 14'},
+  {name:'image',cat:'canvas',desc:'Load and display an image from a URL onto the canvas.',syntax:'<k>image</k> <s>url</s> <n>x y width height</n>',ex:'image https://example.com/img.png 100 100 200 200'},
+  {name:'link',cat:'canvas',desc:'Draw clickable underlined text that opens a URL.',syntax:'<k>link</k> <s>label</s> <n>x y</n> <s>url</s>',ex:'link Visit_Us 100 300 https://example.com\nlink Download 200 400 https://file.com/f.zip'},
+
+  // ── EVENTS ────────────────────────────────────────────────────
+  {name:'onkey',cat:'ui',desc:'Listen for keyboard input. Stores the pressed key name in a variable. Check it with if.',syntax:'<k>onkey</k> <v>variableName</v>',ex:'onkey key\nif key == ArrowLeft\n  sub x 5\nendif\nif key == ArrowRight\n  add x 5\nendif'},
+  {name:'onkeypress',cat:'ui',desc:'Same as onkey. Keyboard listener.',syntax:'<k>onkeypress</k> <v>variableName</v>',ex:'onkeypress pressed\nif pressed == Space\n  jump\nendif'},
+  {name:'onmouse',cat:'ui',desc:'Track mouse position. Stores x and y in mouseX and mouseY variables automatically.',syntax:'<k>onmouse</k>',ex:'onmouse\ncircle mouseX mouseY 20 cyan'},
+  {name:'timer',cat:'ui',desc:'Run code on a repeating interval. Set milliseconds between each run. Increments a counter variable each tick.',syntax:'<k>timer</k> <n>milliseconds</n> <v>counterVar</v>',ex:'timer 1000 tick\ntimer 100 frame\ntimer 500 pulse'},
+  {name:'stoptimers',cat:'ui',desc:'Stop all running timers.',syntax:'<k>stoptimers</k>',ex:'stoptimers'},
+
+  // ── TURTLE ───────────────────────────────────────────────────
+  {name:'goto',cat:'drawing',desc:'Move the turtle to a position without drawing. Sets starting point for next forward command.',syntax:'<k>goto</k> <n>x y</n>',ex:'goto 350 250\ngoto 100 100'},
+  {name:'move',cat:'drawing',desc:'Same as goto. Move turtle to position.',syntax:'<k>move</k> <n>x y</n>',ex:'move 200 300'},
+  {name:'forward',cat:'drawing',desc:'Move turtle forward by pixels, drawing a line. Uses current angle and color.',syntax:'<k>forward</k> <n>pixels</n>',ex:'forward 100\nforward 50\nforward 200'},
+  {name:'fd',cat:'drawing',desc:'Short for forward. Move turtle forward drawing a line.',syntax:'<k>fd</k> <n>pixels</n>',ex:'fd 100\nfd 50'},
+  {name:'right',cat:'drawing',desc:'Rotate turtle right (clockwise) by degrees.',syntax:'<k>right</k> <n>degrees</n>',ex:'right 90\nright 45\nright 120'},
+  {name:'rt',cat:'drawing',desc:'Short for right. Rotate turtle clockwise.',syntax:'<k>rt</k> <n>degrees</n>',ex:'rt 90\nrt 60'},
+  {name:'left',cat:'drawing',desc:'Rotate turtle left (counter-clockwise) by degrees.',syntax:'<k>left</k> <n>degrees</n>',ex:'left 90\nleft 45'},
+  {name:'lt',cat:'drawing',desc:'Short for left. Rotate turtle counter-clockwise.',syntax:'<k>lt</k> <n>degrees</n>',ex:'lt 90\nlt 120'},
+  {name:'home',cat:'drawing',desc:'Move turtle back to center of canvas and reset angle to 0.',syntax:'<k>home</k>',ex:'home'},
+
+  // ── CITY ─────────────────────────────────────────────────────
+  {name:'building',cat:'nature',desc:'Draw a city building with random dark color and lit windows. Set position and dimensions.',syntax:'<k>building</k> <n>x y width height</n>',ex:'building 100 400 60 150\nbuilding 200 400 80 200\nbuilding 350 400 70 120'},
+  {name:'road',cat:'nature',desc:'Draw a road with yellow center dashes. Set vertical position and width.',syntax:'<k>road</k> <n>y width</n>',ex:'road 430 70\nroad 400 60'},
+];
+
+// ── RENDER ─────────────────────────────────────────────────────
+const wrap = document.getElementById('cards-wrap');
+let activeCat = 'all';
+
+// Group by category
+const catOrder = ['drawing','text','style','space','nature','vars','math','logic','ui','storage','media','canvas'];
+const catLabels = {drawing:'Drawing & Shapes',text:'Text & Labels',style:'Style & Effects',space:'Space & Cosmos',nature:'Nature, City & Fantasy',vars:'Variables',math:'Math & Numbers',logic:'Logic & Loops',ui:'Buttons & Events',storage:'Storage',media:'Media & Output',canvas:'Canvas Control'};
+
+function render() {
+  const q = document.getElementById('search').value.toLowerCase().trim();
+  wrap.innerHTML = '';
+  let total = 0;
+
+  catOrder.forEach(cat => {
+    const cmds = COMMANDS.filter(c => {
+      const matchCat = activeCat === 'all' || c.cat === activeCat;
+      const matchQ = !q || c.name.toLowerCase().includes(q) || c.desc.toLowerCase().includes(q);
+      return matchCat && matchQ;
+    }).filter(c => c.cat === cat);
+
+    if (cmds.length === 0) return;
+    total += cmds.length;
+
+    const sec = document.createElement('div');
+    sec.className = 'section';
+    sec.innerHTML = `<div class="section-title">${catLabels[cat]} <span>${cmds.length}</span></div><div class="grid" id="grid-${cat}"></div>`;
+    wrap.appendChild(sec);
+
+    const grid = sec.querySelector('.grid');
+    cmds.forEach(c => {
+      const card = document.createElement('div');
+      card.className = 'cmd-card visible';
+      card.innerHTML = `
+        <div class="cmd-top">
+          <div class="cmd-name">${c.name}</div>
+          <div class="cmd-cat-tag tag-${c.cat}">${c.cat}</div>
+        </div>
+        <div class="cmd-desc">${c.desc}</div>
+        <div class="cmd-example-label">Syntax</div>
+        <div class="cmd-syntax">${c.syntax}</div>
+        <div class="cmd-example-label">Example</div>
+        <div class="cmd-example">${c.ex.replace(/\n/g,'<br>')}</div>`;
+      grid.appendChild(card);
+    });
+  });
+
+  document.getElementById('count').textContent = total + ' commands';
+  document.getElementById('no-results').style.display = total === 0 ? 'block' : 'none';
+  document.getElementById('search-term').textContent = q;
+}
+
+function filterCat(cat) {
+  activeCat = cat;
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  render();
+}
+
+function filterCmds() { render(); }
+
+render();
+</script>
+</body>
+</html>
